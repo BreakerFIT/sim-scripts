@@ -1,2 +1,3 @@
 # sim-scripts
-Sim-related scripts for use by ECorp/FSociety
+Sim-related scripts for use by ECorp/FSociety.
+
