@@ -83,9 +83,6 @@ def get_members(gauntlet):
 
     return members
 
-grep_proc = subprocess.Popen("grep '^eca_.*' data/customdecks.txt | sed -e s/:.*$//", shell=True, stdout=subprocess.PIPE) 
-members = grep_proc.stdout.read().splitlines()
-
 guild = sys.argv[1]
 raid = sys.argv[2]
 bge = sys.argv[3]
