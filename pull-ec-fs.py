@@ -8,6 +8,10 @@ try:
 except ImportError:
     from urllib2 import urlopen
 import shutil
+from argparse import ArgumentParser
+
+parser = ArgumentParser(description='Pull ECorp and FSociety decks from the spreadsheets and merge into customdecks.txt. After this, you will want to add personal custom decks to customdecks_extras.txt instead.')
+parser.parse_args()
 
 ec_name = "ECorp"
 ec_prefix = "ec"
