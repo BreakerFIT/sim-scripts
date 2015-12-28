@@ -24,3 +24,20 @@ optional arguments:
   -h, --help  show this help message and exit
   -f          use unlimited SP (default: use no SP)
   -e BGE      Use BGE as battleground effect (default: none)
+
+----
+usage: guild-quest.py [-h] [-f] [-e BGE]
+                      MEMBER MISSION GUILD_FORTS ENEMY_FORTS
+
+Make optimized deck for a guild quest.
+
+positional arguments:
+  MEMBER       member to sim for
+  MISSION      mission to sim
+  GUILD_FORTS  the guild's current forts
+  ENEMY_FORTS  the enemy's current forts
+
+optional arguments:
+  -h, --help   show this help message and exit
+  -f           use unlimited SP (default: use no SP)
+  -e BGE       Use BGE as battleground effect (default: none)
