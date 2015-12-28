@@ -61,7 +61,7 @@ def mission_params(funds, bge):
 def format_mission_results(member, mission, funds, bge, result):
     funded_string = 'unfunded' if funds == '0' else 'funded'
     bge_string = bge if bge == '' else 'no BGE'
-    result_string = mission + ' for ' + member + ' (' + funded_string + ', ' + bge_string + '): ' + result
+    result_string = 'MISSION: ' + mission + ' for ' + member + ' (' + funded_string + ', ' + bge_string + '): ' + result
 
     return result_string
 
