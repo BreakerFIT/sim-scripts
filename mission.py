@@ -14,7 +14,7 @@ sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
 def parse_arguments():
     unlimited_funds = '30000'
 
-    parser = ArgumentParser(description='Simulate a mission battle.')
+    parser = ArgumentParser(description='Make optimized deck for a mission.')
     parser.add_argument('member', metavar='MEMBER', help='member to sim for')
     parser.add_argument('mission', metavar='MISSION', help='mission to sim')
     parser.add_argument('-f', dest='funds', action='store_const', const=unlimited_funds, default='0', help='use unlimited SP (default: use no SP)')
