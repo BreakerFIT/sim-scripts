@@ -10,7 +10,7 @@ import simlib.output
 def parse_arguments():
     unlimited_funds = '30000'
 
-    parser = ArgumentParser(description='Make optimized PVP surge decks (requires ECG gauntlets).')
+    parser = ArgumentParser(description='Make optimized PVP surge decks (requires ECG gauntlets). Also logs results to results directory.')
     parser.add_argument('member', metavar='MEMBER', help='member to sim for')
     parser.add_argument('-f', dest='funds', action='store_const', const=unlimited_funds, default='0', help='use unlimited SP (default: use no SP)')
     parser.add_argument('-e', dest='bge', metavar='BGE', default='', help='Use BGE as battleground effect (default: none)')
