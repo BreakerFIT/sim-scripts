@@ -94,7 +94,7 @@ def test_surge(member, funds, bge, detail_log):
 
     params = pvp_def_params(funds, bge)
     climb_command = make_climb_command(member, last_deck, last_gauntlet, params, pvp_sim_iter)
-    (def_line, def_deck) = test_and_get_optimized_deck(climb_command)
+    (def_line, def_deck) = test_and_get_optimized_deck(climb_command, detail_log)
 
     end_date = datetime.now()
 
