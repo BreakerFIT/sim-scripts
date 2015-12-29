@@ -6,6 +6,7 @@ from argparse import ArgumentParser
 import re
 import subprocess
 import simlib.output
+import simlib.opt
 
 def parse_arguments():
     unlimited_funds = '30000'
@@ -17,38 +18,6 @@ def parse_arguments():
     args = parser.parse_args()
 
     return (args.member, args.funds, args.bge)
-
-
-def test_and_get_optimized_deck(command, detail_log):
-    print('RUNNING: ' + command)
-    sim_proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, close_fds=True)
-    while True:
-        try:
-            line = sim_proc.stdout.readline()
-        except KeyboardInterrupt:
-            break 
-        if not line:
-            break
-        
-        print(line, file=detail_log, end='', sep='')
-
-        if 'units:' in line:
-            print('.', end='', sep='')
-        if line.startswith('Optimized Deck:'):
-            print('')
-            line = re.sub('Optimized Deck: ', '', line)
-            line = re.sub('\n', '', line)
-            deck_only = re.sub('.*:', '', line)
-
-            return (line, deck_only)
-
-def make_climb_command(member, deck, target, params, count):
-    command = './tuo ' + '"' + deck + '"' + ' "' + target + '" -t 32 -o="data/' + member + '.txt" ' + params + ' endgame 1 climb ' + str(count)
-    return command
-
-def make_reorder_command(member, deck, target, params, count):
-    command = './tuo ' + '"' + deck + '"' + ' "' + target + '" -t 32 -o="data/' + member + '.txt" ' + params + ' endgame 1 reorder ' + str(count)
-    return command
 
 pvp_sim_iter = 2000
 
@@ -81,11 +50,11 @@ def test_surge(member, funds, bge, detail_log):
     for gauntlet in gauntlets:
         last_gauntlet = gauntlet
 
-        climb_command = make_climb_command(member, last_deck, gauntlet, params, pvp_sim_iter)
-        (climb_line, climb_deck) = test_and_get_optimized_deck(climb_command, detail_log)
+        climb_command = simlib.opt.climb_command(member, last_deck, gauntlet, params, pvp_sim_iter)
+        (climb_line, climb_deck) = simlib.opt.optimize(climb_command, detail_log)
 
-        reorder_command = make_reorder_command(member, climb_deck, gauntlet, params, pvp_sim_iter)
-        (last_line, last_deck) = test_and_get_optimized_deck(reorder_command, detail_log)
+        reorder_command = simlib.opt.reorder_command(member, climb_deck, gauntlet, params, pvp_sim_iter)
+        (last_line, last_deck) = simlib.opt.optimize(reorder_command, detail_log)
 
         win_rate_str = re.match('.*units: (.*):.*', last_line).group(1)
         win_rate = float(win_rate_str)
@@ -93,8 +62,8 @@ def test_surge(member, funds, bge, detail_log):
             break
 
     params = pvp_def_params(funds, bge)
-    climb_command = make_climb_command(member, last_deck, last_gauntlet, params, pvp_sim_iter)
-    (def_line, def_deck) = test_and_get_optimized_deck(climb_command, detail_log)
+    climb_command = simlib.opt.climb_command(member, last_deck, last_gauntlet, params, pvp_sim_iter)
+    (def_line, def_deck) = simlib.opt.optimize(climb_command, detail_log)
 
     end_date = datetime.now()
 
