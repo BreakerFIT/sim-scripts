@@ -14,7 +14,9 @@ Sim-related scripts for use by ECorp/FSociety.
 ----
 	usage: pvp-ecg.py [-h] [-f] [-e BGE] MEMBER
 
-	Make optimized PVP surge decks (requires ECG gauntlets).
+	Make optimized PVP surge decks (requires ECG gauntlets). Also logs results to
+	results directory.
+
 
 	positional arguments:
 	  MEMBER      member to sim for
@@ -27,7 +29,7 @@ Sim-related scripts for use by ECorp/FSociety.
 ----
 	usage: mission.py [-h] [-f] [-e BGE] MEMBER MISSION
 
-	Simulate a mission battle.
+	Make optimized deck for a mission. Also logs results to results directory.
 
 	positional arguments:
 	  MEMBER      member to sim for
@@ -41,7 +43,7 @@ Sim-related scripts for use by ECorp/FSociety.
 ----
 	usage: guild-quest.py [-h] [-f] [-e BGE] MEMBER MISSION GUILD_FORTS ENEMY_FORTS
 
-	Make optimized deck for a guild quest.
+	Make optimized deck for a guild quest. Also logs results to results directory.
 
 	positional arguments:
 	  MEMBER       member to sim for
