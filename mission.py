@@ -72,7 +72,7 @@ def test_mission(member, mission, funds, bge):
     start_date = datetime.now()
     (climb_line, climb_deck) = test_and_get_optimized_deck(climb_command)
 
-    reorder_command = make_climb_command(member, climb_deck, mission, params, mission_sim_iter)
+    reorder_command = make_reorder_command(member, climb_deck, mission, params, mission_sim_iter)
     (reorder_line, reorder_deck) = test_and_get_optimized_deck(reorder_command)
     end_date = datetime.now()
 
