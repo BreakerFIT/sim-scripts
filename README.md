@@ -12,6 +12,19 @@ optional arguments:
   -h, --help  show this help message and exit
 
 ----
+usage: pvp-ecg.py [-h] [-f] [-e BGE] MEMBER
+
+Make optimized PVP surge decks (requires ECG gauntlets).
+
+positional arguments:
+  MEMBER      member to sim for
+
+optional arguments:
+  -h, --help  show this help message and exit
+  -f          use unlimited SP (default: use no SP)
+  -e BGE      Use BGE as battleground effect (default: none)
+
+----
 usage: mission.py [-h] [-f] [-e BGE] MEMBER MISSION
 
 Simulate a mission battle.
