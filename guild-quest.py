@@ -3,18 +3,14 @@
 from __future__ import print_function
 from datetime import datetime
 from argparse import ArgumentParser
-import os
 import re
 import subprocess
-import sys
-
-sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
-
+import simlib.output
 
 def parse_arguments():
     unlimited_funds = '30000'
 
-    parser = ArgumentParser(description='Make optimized deck for a guild quest.')
+    parser = ArgumentParser(description='Make optimized deck for a guild quest. Also logs results to results directory.')
     parser.add_argument('member', metavar='MEMBER', help='member to sim for')
     parser.add_argument('mission', metavar='MISSION', help='mission to sim')
     parser.add_argument('guild_forts', metavar='GUILD_FORTS', help="the guild's current forts")
@@ -26,7 +22,7 @@ def parse_arguments():
     return (args.member, args.mission, args.guild_forts, args.enemy_forts, args.funds, args.bge)
 
 
-def test_and_get_optimized_deck(command):
+def test_and_get_optimized_deck(command, detail_log):
     print('RUNNING: ' + command)
     sim_proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, close_fds=True)
     while True:
@@ -67,15 +63,15 @@ def format_gq_results(member, mission, guild_forts, enemy_forts, funds, bge, res
 
     return result_string
 
-def test_gq(member, mission, guild_forts, enemy_forts, funds, bge):
+def test_gq(member, mission, guild_forts, enemy_forts, funds, bge, detail_log):
     params = gq_params(guild_forts, enemy_forts, funds, bge)
 
     climb_command = make_climb_command(member, member, mission, params, gq_sim_iter)
     start_date = datetime.now()
-    (climb_line, climb_deck) = test_and_get_optimized_deck(climb_command)
+    (climb_line, climb_deck) = test_and_get_optimized_deck(climb_command, detail_log)
 
     reorder_command = make_reorder_command(member, climb_deck, mission, params, gq_sim_iter)
-    (reorder_line, reorder_deck) = test_and_get_optimized_deck(reorder_command)
+    (reorder_line, reorder_deck) = test_and_get_optimized_deck(reorder_command, detail_log)
     end_date = datetime.now()
 
     print('[Sim took: ' + str(end_date - start_date) + ']')
@@ -83,5 +79,11 @@ def test_gq(member, mission, guild_forts, enemy_forts, funds, bge):
     results = format_gq_results(member, mission, guild_forts, enemy_forts, funds, bge, reorder_line)
     print(results)
 
+def gq_logfiles(member, mission, guild_forts, enemy_forts, funds, bge):
+    bge_suffix = '-' + bge if bge else ''
+    suffix = '-mission-' + mission + '-' + guild_forts + '-' + enemy_forts + '-' + funds + 'sp' + bge_suffix + '.txt'
+    return (member + suffix, member + '-log' + suffix)
+
 (member, mission, guild_forts, enemy_forts, funds, bge) = parse_arguments()
-test_gq(member, mission, guild_forts, enemy_forts, funds, bge)
+detail_log = simlib.output.prep_output(*gq_logfiles(member, mission, guild_forts, enemy_forts, funds, bge))
+test_gq(member, mission, guild_forts, enemy_forts, funds, bge, detail_log)
