@@ -2,9 +2,11 @@
 from __future__ import print_function
 import re
 import subprocess
+from simlib import output
 
 def optimize(command, detail_log):
     print('RUNNING: ' + command)
+    output.log('RUNNING: ' + command)
     sim_proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, close_fds=True)
     while True:
         try:
@@ -14,7 +16,7 @@ def optimize(command, detail_log):
         if not line:
             break
         
-        print(line, file=detail_log, end='', sep='')
+        output.log(line, newline=False)
 
         if 'units:' in line:
             print('.', end='', sep='')

@@ -1,7 +1,11 @@
+
+from __future__ import print_function
 import sys
 import os
 import os.path
 import errno
+
+logfile = None
 
 def unbuffer_stdout():
     sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
@@ -33,15 +37,21 @@ class tee_file:
         self.file1.flush()
         self.file2.flush()
 
-def tee_output(logfile):
-    tee = tee_file(sys.stdout, logfile)
+def tee_output(outfile):
+    tee = tee_file(sys.stdout, outfile)
     sys.stdout = tee
     sys.stderr = tee
 
 def prep_output(log_fname, detail_fname):
     unbuffer_stdout()
     mkdir_p('results')
-    logfile = open('results/' + log_fname, 'w', 0)
-    tee_output(logfile)
+    outfile = open('results/' + log_fname, 'w', 0)
+    tee_output(outfile)
 
-    return open('results/' + detail_fname, 'w', 0)
+    global logfile
+    logfile = open('results/' + detail_fname, 'w', 0)
+
+    return None
+
+def log(str, newline=True):
+    print(str, file=logfile, end='\n' if newline else '', sep='')
