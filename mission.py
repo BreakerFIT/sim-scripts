@@ -33,15 +33,15 @@ def format_mission_results(member, mission, funds, bge, result):
 
     return result_string
 
-def test_mission(member, mission, funds, bge, detail_log):
+def test_mission(member, mission, funds, bge):
     params = mission_params(funds, bge)
 
     climb_command = simlib.opt.climb_command(member, member, mission, params, mission_sim_iter)
     start_date = datetime.now()
-    (climb_line, climb_deck) = simlib.opt.optimize(climb_command, detail_log)
+    (climb_line, climb_deck) = simlib.opt.optimize(climb_command)
 
     reorder_command = simlib.opt.reorder_command(member, climb_deck, mission, params, mission_sim_iter)
-    (reorder_line, reorder_deck) = simlib.opt.optimize(reorder_command, detail_log)
+    (reorder_line, reorder_deck) = simlib.opt.optimize(reorder_command)
     end_date = datetime.now()
 
     print('[Sim took: ' + str(end_date - start_date) + ']')
@@ -49,11 +49,11 @@ def test_mission(member, mission, funds, bge, detail_log):
     results = format_mission_results(member, mission, funds, bge, reorder_line)
     print(results)
 
-def mission_logfiles(member, mission, funds, bge):
+def mission_logfile(member, mission, funds, bge):
     bge_suffix = '-' + bge if bge else ''
-    suffix = '-mission-' + mission + '-' + funds + 'sp' + bge_suffix + '.txt'
-    return (member + suffix, member + '-log' + suffix)
+    return member + '-mission-' + mission + '-' + funds + 'sp' + bge_suffix + '.txt'
+
 
 (member, mission, funds, bge) = parse_arguments()
-detail_log = simlib.output.prep_output(*mission_logfiles(member, mission, funds, bge))
-test_mission(member, mission, funds, bge, detail_log)
+simlib.output.prep_output(mission_logfile(member, mission, funds, bge))
+test_mission(member, mission, funds, bge)

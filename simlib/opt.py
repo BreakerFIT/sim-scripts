@@ -4,7 +4,7 @@ import re
 import subprocess
 from simlib import output
 
-def optimize(command, detail_log):
+def optimize(command):
     print('RUNNING: ' + command)
     output.log('RUNNING: ' + command)
     sim_proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, close_fds=True)

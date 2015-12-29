@@ -34,15 +34,15 @@ def format_gq_results(member, mission, guild_forts, enemy_forts, funds, bge, res
 
     return result_string
 
-def test_gq(member, mission, guild_forts, enemy_forts, funds, bge, detail_log):
+def test_gq(member, mission, guild_forts, enemy_forts, funds, bge):
     params = gq_params(guild_forts, enemy_forts, funds, bge)
 
     climb_command = simlib.opt.climb_command(member, member, mission, params, gq_sim_iter)
     start_date = datetime.now()
-    (climb_line, climb_deck) = simlib.opt.optimize(climb_command, detail_log)
+    (climb_line, climb_deck) = simlib.opt.optimize(climb_command)
 
-    reorder_command = make_reorder_command(member, climb_deck, mission, params, gq_sim_iter)
-    (reorder_line, reorder_deck) = simlib.opt.optimize(reorder_command, detail_log)
+    reorder_command = simlib.opt.reorder_command(member, climb_deck, mission, params, gq_sim_iter)
+    (reorder_line, reorder_deck) = simlib.opt.optimize(reorder_command)
     end_date = datetime.now()
 
     print('[Sim took: ' + str(end_date - start_date) + ']')
@@ -52,9 +52,8 @@ def test_gq(member, mission, guild_forts, enemy_forts, funds, bge, detail_log):
 
 def gq_logfiles(member, mission, guild_forts, enemy_forts, funds, bge):
     bge_suffix = '-' + bge if bge else ''
-    suffix = '-mission-' + mission + '-' + guild_forts + '-' + enemy_forts + '-' + funds + 'sp' + bge_suffix + '.txt'
-    return (member + suffix, member + '-log' + suffix)
+    return member + '-gq-' + mission + '-' + guild_forts + '-' + enemy_forts + '-' + funds + 'sp' + bge_suffix + '.txt'
 
 (member, mission, guild_forts, enemy_forts, funds, bge) = parse_arguments()
-detail_log = simlib.output.prep_output(*gq_logfiles(member, mission, guild_forts, enemy_forts, funds, bge))
-test_gq(member, mission, guild_forts, enemy_forts, funds, bge, detail_log)
+simlib.output.prep_output(gq_logfiles(member, mission, guild_forts, enemy_forts, funds, bge))
+test_gq(member, mission, guild_forts, enemy_forts, funds, bge)
