@@ -25,7 +25,7 @@ def pvp_atk_params(funds, bge):
     return '-r -s -e "' + bge + '" fund ' + funds + ' '
 
 def pvp_def_params(funds, bge):
-    return 'enemy:ordered -e "' + bge + '" fund ' + funds + ' '
+    return 'enemy:ordered defense -e "' + bge + '" fund ' + funds + ' '
 
 def format_pvp_results(type, member, gauntlet, funds, bge, result):
     funded_string = 'unfunded' if funds == '0' else 'funded'
