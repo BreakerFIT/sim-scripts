@@ -30,7 +30,7 @@ def pvp_def_params(funds, bge):
 def format_pvp_results(type, member, gauntlet, funds, bge, result):
     funded_string = 'unfunded' if funds == '0' else 'funded'
     bge_string = bge if bge != '' else 'no BGE'
-    result_string = 'PVP SURGE ' + type + ' (' + gauntlet + ') for ' + member + ' (' + funded_string + ', ' + bge_string + '): ' + result
+    result_string = 'BRAWL ' + type + ' (' + gauntlet + ') for ' + member + ' (' + funded_string + ', ' + bge_string + '): ' + result
 
     return result_string
 
@@ -66,7 +66,7 @@ def test_surge(member, funds, bge):
         last_line = copy_cost(last_line, climb_line)
         print(last_line)
 
-        win_rate_str = re.match('.*units:.* ([0-9.]*):.*', last_line).group(1)
+        win_rate_str = re.match('.*units: [(](.*)% win.*', last_line).group(1)
         win_rate = float(win_rate_str)
         if win_rate < 60:
             break
