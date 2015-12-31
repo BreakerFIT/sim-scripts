@@ -8,18 +8,34 @@ import subprocess
 import simlib.output
 import simlib.opt
 
+decks_file = "data/customdecks.txt"
+def get_members(gauntlet):
+    members = []
+    decks = open(decks_file, "r")
+    for line in decks:
+        if line.startswith(gauntlet + ":"):
+            gauntlet_regexp = re.sub('.*: */(.*)/$', '\\1', line)
+    decks.close()
+    decks = open(decks_file, "r")
+    for line in decks:
+        if re.match(gauntlet_regexp, line):
+            member = re.sub(':.*\n$', '', line)
+            members.append(member)
+
+    return members
+
 def parse_arguments():
     unlimited_funds = '30000'
 
     parser = ArgumentParser(description='Make optimized brawl decks (requires ECG gauntlets). Also logs results to results directory.')
-    parser.add_argument('member', metavar='MEMBER', help='member to sim for')
+    parser.add_argument('guild', metavar='GUILD', help='guild gauntlet to sim for')
     parser.add_argument('-f', dest='funds', action='store_const', const=unlimited_funds, default='0', help='use unlimited SP (default: use no SP)')
     parser.add_argument('-e', dest='bge', metavar='BGE', default='', help='Use BGE as battleground effect (default: none)')
     args = parser.parse_args()
 
-    return (args.member, args.funds, args.bge)
+    return (args.guild, args.funds, args.bge)
 
-brawl_sim_iter = 2000
+brawl_sim_iter = 1000
 
 def brawl_atk_params(funds, bge):
     return '-r -s brawl -e "' + bge + '" fund ' + funds + ' '
@@ -83,10 +99,16 @@ def test_brawl(member, funds, bge):
     def_results = format_brawl_def_results(member, last_gauntlet, funds, bge, def_line)
     print(def_results)
 
-def brawl_ecg_logfile(member, funds, bge):
+def mass_brawl_ecg_logfile(guild, funds, bge):
     bge_suffix = '-' + bge if bge else ''
-    return member + '-brawl-ecg-' + funds + 'sp' + bge_suffix + '.txt'
+    return guild + '-mass-brawl-ecg-' + funds + 'sp' + bge_suffix + '.txt'
 
-(member, funds, bge) = parse_arguments()
-simlib.output.prep_output(brawl_ecg_logfile(member, funds, bge))
-test_brawl(member, funds, bge)
+
+(guild, funds, bge) = parse_arguments()
+simlib.output.prep_output(mass_brawl_ecg_logfile(guild, funds, bge))
+
+members = get_members(guild)
+print(members)
+
+for member in members:
+    test_brawl(member, funds, bge)
