@@ -40,6 +40,13 @@ def format_pvp_atk_results(*args):
 def format_pvp_def_results(*args):
     return format_pvp_results('DEFENSE', *args)
 
+def copy_cost(to_line, from_line):
+    cost_match = re.match('.*units: \$([0-9]*).*', from_line)
+    if cost_match:
+        cost_str = cost_match.group(1)
+        return re.sub('units: ', 'units: $' + cost_str + ' ', to_line)
+    return to_line
+    
 def test_surge(member, funds, bge):
     gauntlets = ["ECG_1000", "ECG_500", "ECG_100"]
     params = pvp_atk_params(funds, bge)
@@ -56,7 +63,10 @@ def test_surge(member, funds, bge):
         reorder_command = simlib.opt.reorder_command(member, climb_deck, gauntlet, params, pvp_sim_iter)
         (last_line, last_deck) = simlib.opt.optimize(reorder_command)
 
-        win_rate_str = re.match('.*units: (.*):.*', last_line).group(1)
+        last_line = copy_cost(last_line, climb_line)
+        print(last_line)
+
+        win_rate_str = re.match('.*units:.* ([0-9.]*):.*', last_line).group(1)
         win_rate = float(win_rate_str)
         if win_rate < 60:
             break
