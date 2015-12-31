@@ -40,7 +40,14 @@ def format_pvp_atk_results(*args):
 def format_pvp_def_results(*args):
     return format_pvp_results('DEFENSE', *args)
 
-def test_surge(member, funds, bge, detail_log):
+def copy_cost(to_line, from_line):
+    cost_match = re.match('.*units: \$([0-9]*).*', from_line)
+    if cost_match:
+        cost_str = cost_match.group(1)
+        return re.sub('units: ', 'units: $' + cost_str + ' ', to_line)
+    return to_line
+    
+def test_surge(member, funds, bge):
     gauntlets = ["ECG_1000", "ECG_500", "ECG_100"]
     params = pvp_atk_params(funds, bge)
 
@@ -51,19 +58,22 @@ def test_surge(member, funds, bge, detail_log):
         last_gauntlet = gauntlet
 
         climb_command = simlib.opt.climb_command(member, last_deck, gauntlet, params, pvp_sim_iter)
-        (climb_line, climb_deck) = simlib.opt.optimize(climb_command, detail_log)
+        (climb_line, climb_deck) = simlib.opt.optimize(climb_command)
 
         reorder_command = simlib.opt.reorder_command(member, climb_deck, gauntlet, params, pvp_sim_iter)
-        (last_line, last_deck) = simlib.opt.optimize(reorder_command, detail_log)
+        (last_line, last_deck) = simlib.opt.optimize(reorder_command)
 
-        win_rate_str = re.match('.*units: (.*):.*', last_line).group(1)
+        last_line = copy_cost(last_line, climb_line)
+        print(last_line)
+
+        win_rate_str = re.match('.*units:.* ([0-9.]*):.*', last_line).group(1)
         win_rate = float(win_rate_str)
         if win_rate < 60:
             break
 
     params = pvp_def_params(funds, bge)
     climb_command = simlib.opt.climb_command(member, last_deck, last_gauntlet, params, pvp_sim_iter)
-    (def_line, def_deck) = simlib.opt.optimize(climb_command, detail_log)
+    (def_line, def_deck) = simlib.opt.optimize(climb_command)
 
     end_date = datetime.now()
 
@@ -74,11 +84,10 @@ def test_surge(member, funds, bge, detail_log):
     def_results = format_pvp_def_results(member, last_gauntlet, funds, bge, def_line)
     print(def_results)
 
-def pvp_ecg_logfiles(member, funds, bge):
+def pvp_ecg_logfile(member, funds, bge):
     bge_suffix = '-' + bge if bge else ''
-    suffix = '-pvp-ecg-' + funds + 'sp' + bge_suffix + '.txt'
-    return (member + suffix, member + '-log' + suffix)
+    return member + '-pvp-ecg-' + funds + 'sp' + bge_suffix + '.txt'
 
 (member, funds, bge) = parse_arguments()
-detail_log = simlib.output.prep_output(*pvp_ecg_logfiles(member, funds, bge))
-test_surge(member, funds, bge, detail_log)
+simlib.output.prep_output(pvp_ecg_logfile(member, funds, bge))
+test_surge(member, funds, bge)

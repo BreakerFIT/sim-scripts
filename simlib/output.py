@@ -1,9 +1,10 @@
 
 from __future__ import print_function
-import sys
+import errno
 import os
 import os.path
-import errno
+import re
+import sys
 
 logfile = None
 
@@ -42,16 +43,16 @@ def tee_output(outfile):
     sys.stdout = tee
     sys.stderr = tee
 
-def prep_output(log_fname, detail_fname):
+def prep_output(out_fname):
     unbuffer_stdout()
     mkdir_p('results')
-    outfile = open('results/' + log_fname, 'w', 0)
+    outfile = open('results/' + out_fname, 'w', 0)
     tee_output(outfile)
 
-    global logfile
-    logfile = open('results/' + detail_fname, 'w', 0)
+    log_fname = re.sub('-', '-log-', out_fname, count=1)
 
-    return None
+    global logfile
+    logfile = open('results/' + log_fname, 'w', 0)
 
 def log(str, newline=True):
     print(str, file=logfile, end='\n' if newline else '', sep='')
