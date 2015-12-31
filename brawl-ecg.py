@@ -64,7 +64,6 @@ def test_surge(member, funds, bge):
         (last_line, last_deck) = simlib.opt.optimize(reorder_command)
 
         last_line = copy_cost(last_line, climb_line)
-        print(last_line)
 
         win_rate_str = re.match('.*units: [(](.*)% win.*', last_line).group(1)
         win_rate = float(win_rate_str)
