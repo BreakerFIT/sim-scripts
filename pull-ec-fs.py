@@ -4,7 +4,7 @@
 from __future__ import print_function
 import re
 try:
-    from urrlib.request import urlopen
+    from urllib.request import urlopen
 except ImportError:
     from urllib2 import urlopen
 import shutil
@@ -25,18 +25,18 @@ fs_inventory_url = "https://docs.google.com/spreadsheets/d/1zY77bNRRPom9fTLcgFZK
 
 
 def fetch_guild(name, prefix, gauntlet_url, inventory_url):
-    gauntlet_filename = "data/" + name + "_gauntlets.txt"
+    gauntlet_filename = "../data/" + name + "_gauntlets.txt"
 
     print("Downloading " + name + " gauntlets into " + gauntlet_filename)
 
 
     gauntlets = urlopen(gauntlet_url)
-    gauntlet_file = open(gauntlet_filename, "w")
+    gauntlet_file = open(gauntlet_filename, "wb")
     for line in gauntlets:
         line = re.sub(r'[\r\n]+', '\n', line.decode('UTF-8'))
         gauntlet_file.write(line.encode('UTF-8'))
 
-    gauntlet_file.write("\n")
+    gauntlet_file.write("\n".encode('UTF-8'))
     gauntlet_file.close()
 
     inventories = urlopen(inventory_url)
@@ -56,23 +56,23 @@ def fetch_guild(name, prefix, gauntlet_url, inventory_url):
         inv_array = inv.split(", ")
         inv_array = [re.sub(" [x×]", " #", item) for item in inv_array]
 
-        name_atk = name.replace(generic_prefix, atk_prefix)
-        name_def = name.replace(generic_prefix, def_prefix)
+        name_atk = name.replace(generic_prefix, atk_prefix).replace("?","_")
+        name_def = name.replace(generic_prefix, def_prefix).replace("?","_")
 
-        out_atk = open("data/" + name_atk + ".txt", "w")
-        out_atk.write("\n".join(inv_array).encode("UTF-8"))
+        out_atk = open("../data/" + name_atk + ".txt", "wb")
+        out_atk.write("\n".join(inv_array).encode("UTF-8", "replace"))
         out_atk.flush()
         out_atk.close()
 
-        out_def = open("data/" + name_def + ".txt", "w")
-        out_def.write("\n".join(inv_array).encode("UTF-8"))
+        out_def = open("../data/" + name_def + ".txt", "wb")
+        out_def.write("\n".join(inv_array).encode("UTF-8", "replace"))
         out_def.flush()
         out_def.close()
 
     inventories.close()
 
 def merge_gauntlets(marker, guild1, guild2):
-    customdecks_file = open("data/customdecks.txt", "r")
+    customdecks_file = open("../data/customdecks.txt", "r")
     first_time = (customdecks_file.read().find(marker) == -1)
 
     if first_time:
@@ -81,11 +81,11 @@ def merge_gauntlets(marker, guild1, guild2):
 
     customdecks_file.close()
 
-    gauntlet1_filename = "data/" + guild1 + "_gauntlets.txt"
-    gauntlet2_filename = "data/" + guild2 + "_gauntlets.txt"
+    gauntlet1_filename = "../data/" + guild1 + "_gauntlets.txt"
+    gauntlet2_filename = "../data/" + guild2 + "_gauntlets.txt"
 
-    customdecks_file = open("data/customdecks.txt", "w")
-    extras_file = open("data/customdecks_extras.txt", "r")
+    customdecks_file = open("../data/customdecks.txt", "w")
+    extras_file = open("../data/customdecks_extras.txt", "r")
     gauntlet1_file = open(gauntlet1_filename, "r")
     gauntlet2_file = open(gauntlet2_filename, "r")
 

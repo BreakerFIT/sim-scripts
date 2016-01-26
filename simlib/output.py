@@ -9,7 +9,7 @@ import sys
 logfile = None
 
 def unbuffer_stdout():
-    sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
+    sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 1)
 
 def mkdir_p(path):
     try:
@@ -46,13 +46,13 @@ def tee_output(outfile):
 def prep_output(out_fname):
     unbuffer_stdout()
     mkdir_p('results')
-    outfile = open('results/' + out_fname, 'w', 0)
+    outfile = open('results/' + out_fname, 'w', 1)
     tee_output(outfile)
 
     log_fname = re.sub('-', '-log-', out_fname, count=1)
 
     global logfile
-    logfile = open('results/' + log_fname, 'w', 0)
+    logfile = open('results/' + log_fname, 'w', 1)
 
 def log(str, newline=True):
     print(str, file=logfile, end='\n' if newline else '', sep='')

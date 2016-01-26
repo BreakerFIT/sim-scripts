@@ -63,7 +63,7 @@ def copy_cost(to_line, from_line):
         return re.sub('units: ', 'units: $' + cost_str + ' ', to_line)
     return to_line
     
-def test_brawl(member, funds, bge):
+def test_brawl(member, funds, bge, summaryfile):
     gauntlets = ["ECG_1000", "ECG_500", "ECG_100"]
     params = brawl_atk_params(funds, bge)
 
@@ -96,8 +96,11 @@ def test_brawl(member, funds, bge):
     print('')
     atk_results = format_brawl_atk_results(member, last_gauntlet, funds, bge, last_line)
     print(atk_results)
+    print(atk_results, file=summaryfile)
     def_results = format_brawl_def_results(member, last_gauntlet, funds, bge, def_line)
     print(def_results)
+    print(def_results, file=summaryfile)
+    print("", file=summaryfile)
 
 def mass_brawl_ecg_logfile(guild, funds, bge):
     bge_suffix = '-' + bge if bge else ''
@@ -105,10 +108,14 @@ def mass_brawl_ecg_logfile(guild, funds, bge):
 
 
 (guild, funds, bge) = parse_arguments()
-simlib.output.prep_output(mass_brawl_ecg_logfile(guild, funds, bge))
+fname = mass_brawl_ecg_logfile(guild, funds, bge)
+simlib.output.prep_output(fname)
+
+summary_fname = re.sub('-', '-summary-', fname, count=1)
+summaryfile = open('results/' + summary_fname, 'w', 1)
 
 members = get_members(guild)
 print(members)
 
 for member in members:
-    test_brawl(member, funds, bge)
+    test_brawl(member, funds, bge, summaryfile)
